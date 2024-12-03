@@ -34,6 +34,10 @@ namespace boost {
                   return total;
             }
 
+            auto reserve(const std::size_t amt) {
+                  this->data.reserve(amt);
+                  return;
+            } 
             auto empty() const {
                   return this->data.empty();
             }
