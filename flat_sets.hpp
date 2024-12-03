@@ -4,7 +4,7 @@
 namespace boost {
 
       template <typename T>
-      class flat_unordered_multiset {
+      class unordered_flat_multiset {
 
           public:
             void insert(const T &value) {
@@ -56,6 +56,7 @@ namespace boost {
             }
 
           private:
+
             boost::unordered_flat_map<T, std::size_t> data;
             struct flattened_iterator {
 
