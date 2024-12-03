@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/unordered/unordered_flat_set.hpp>
+#include <boost/unordered/unordered_flat_map.hpp>
 
 namespace boost {
 
@@ -34,7 +35,13 @@ namespace boost {
                   }
                   return total;
             }
-
+   
+            auto contains(const T &value) const {
+                  return this->data.contains(value);
+            }
+            auto max_load_factor() const {
+                  return this->data.max_load_factor();
+            }
             auto reserve(const std::size_t amt) {
                   this->data.reserve(amt);
                   return;
@@ -59,6 +66,7 @@ namespace boost {
             auto end() const {
                   return flattened_iterator(data.end(), data.end());
             }
+      
 
             template <typename input_it>
             void insert(input_it first, input_it last) {
@@ -66,6 +74,21 @@ namespace boost {
                         this->insert(*it);
                   }
                   return;
+            }
+
+            auto find(const T &value) {
+                  auto it = this->data.find(value);
+                  if (it == this->data.end()) {
+                        return this->end();
+                  }
+                  return flattened_iterator(it, this->data.end());
+            }
+            auto find(const T &value) const {
+                  auto it = this->data.find(value);
+                  if (it == this->data.end()) {
+                        return this->end();
+                  }
+                  return flattened_iterator(it, this->data.end());
             }
 
           private:
