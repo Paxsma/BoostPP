@@ -60,6 +60,14 @@ namespace boost {
                   return flattened_iterator(data.end(), data.end());
             }
 
+            template <typename input_it>
+            void insert(input_it first, input_it last) {
+                  for (auto it = first; it != last; ++it) {
+                        this->insert(*it);
+                  }
+                  return;
+            }
+
           private:
 
             boost::unordered_flat_map<T, std::size_t> data;
