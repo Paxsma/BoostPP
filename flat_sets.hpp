@@ -8,7 +8,8 @@ namespace boost {
 
           public:
             void insert(const T &value) {
-                  ++data[value];
+                  ++this->data[value];
+                  return;
             }
 
             void erase(const T &value) {
