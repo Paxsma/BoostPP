@@ -52,6 +52,10 @@ namespace boost {
                   }
                   return this->data[idx];
             }
+            inline void clear() {
+                  this->size_ = 0u;
+                  return;
+            }
 
             T &operator[](const std::size_t idx) {
                   return this->data[idx];
@@ -78,4 +82,4 @@ namespace boost {
            std::size_t size_ = 0u;
       };
 
-} // namespace reign
+} // namespace vector
