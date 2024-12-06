@@ -235,10 +235,10 @@ namespace boost {
                   std::variant<vect_iterator, set_iterator> iter_;
 
                 public:
-                  explicit iterator(vect_iterator it)
+                  explicit iterator(const vect_iterator &it)
                       : iter_(it) {
                   }
-                  explicit iterator(set_iterator it)
+                  explicit iterator(const set_iterator &it)
                       : iter_(it) {
                   }
 
@@ -263,10 +263,10 @@ namespace boost {
                   std::variant<vect_iterator, set_iterator> iter_;
 
                 public:
-                  explicit const_iterator(vect_iterator it)
+                  explicit const_iterator(const vect_iterator& it)
                       : iter_(it) {
                   }
-                  explicit const_iterator(set_iterator it)
+                  explicit const_iterator(const set_iterator& it)
                       : iter_(it) {
                   }
 
@@ -283,7 +283,18 @@ namespace boost {
                         return this->iter_ != other.iter_;
                   }
             };
-
+            inline auto find(const T &data) {
+                  if (this->tranformed) {
+                        return iterator(this->data.value().find(data));
+                  }
+                  return iterator(this->vect.find(data));
+            }
+            inline auto find(const T &data) const {
+                  if (this->tranformed) {
+                        return const_iterator(this->data.value().find(data));
+                  }
+                  return const_iterator(this->vect.find(data));
+            }
             iterator begin() {
                   return this->tranformed ? iterator(this->data.value().begin()) : iterator(this->vect.begin());
             }
