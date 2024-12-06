@@ -73,8 +73,8 @@ namespace boost {
             }
             inline std::size_t count(const T &data) const {
                   std::size_t result = 0u;
-                  for (const auto &i : this->data) {
-                        result += (i == data);
+                  for (auto i = 0u; i < this->size_; ++i) {
+                       result += this->data[i] == data;
                   }
                   return result;
             }
