@@ -12,7 +12,7 @@ namespace boost {
             }
             using iterator = typename std::array<T, N>::iterator;
             using const_iterator = typename std::array<T, N>::const_iterator;
-
+  
             constexpr std::size_t max_size() const {
                   return N;
             }
@@ -36,14 +36,6 @@ namespace boost {
                   }
                   this->data[this->size_++] = std::move(value);
                   return;
-            }
-            inline std::pair<std::size_t, bool> find(const T &value) {
-                  for (auto i = 0u; i < this->size_; ++i) {
-                        if (this->data[i] == value) {
-                              return std::make_pair(i, true);
-                        }
-                  }
-                  return std::make_pair(0u, false);
             }
             inline void pop_back() {
                   if (!this->size_) {
@@ -86,6 +78,22 @@ namespace boost {
                   }
                   return result;
             }
+            inline auto find(const T &value) {
+                  for (auto i = 0u; i < this->size_; ++i) {
+                        if (this->data[i] == value) {
+                              return this->data.begin() + i;
+                        }
+                  }
+                  return this->data.begin() + this->size_; 
+            }
+            inline auto find(const T &value) const {
+                  for (auto i = 0u; i < this->size_; ++i) {
+                        if (this->data[i] == value) {
+                              return this->data.begin() + i;
+                        }
+                  }
+                  return this->data.begin() + this->size_;
+            }
             inline T &operator[](const std::size_t idx) {
                   return this->data[idx];
             }
@@ -99,12 +107,25 @@ namespace boost {
             inline auto end() {
                   return this->data.begin() + this->size_;
             }
+            inline auto rbegin() {
+                  return this->data.rbegin();
+            }
+            inline auto rend() {
+                  return this->data.rend();
+            }
             inline auto begin() const {
                   return this->data.begin();
             }
             inline auto end() const {
                   return this->data.begin() + this->size_;
             }
+            inline auto rbegin() const {
+                  return this->data.rbegin();
+            }
+            inline auto rend() const {
+                  return this->data.rend();
+            }
+
 
           private:
             std::array<T, N> data;
