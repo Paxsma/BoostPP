@@ -1,66 +1,77 @@
 #include <array>
 #include <cstdint>
+#include <stdexcept>
 
 namespace boost {
 
       template <typename T, std::size_t N>
       class fixed_vector {
-
           public:
-            fixed_vector()
-                : size_(0u) {
+            constexpr fixed_vector()
+                : size_(0) {
             }
+
+            constexpr fixed_vector(std::initializer_list<T> init_list)
+                : size_(init_list.size()) {
+
+                  static_assert(init_list.size() <= N, "Initializer list exceeds maximum size");
+                  if (init_list.size() > N) {
+                        throw std::out_of_range("Initializer list exceeds maximum size");
+                  }
+                  std::copy_n(init_list.begin(), this->size_, this->data.begin());
+                  return;
+            }
+
             using iterator = typename std::array<T, N>::iterator;
             using const_iterator = typename std::array<T, N>::const_iterator;
-  
+
             constexpr std::size_t max_size() const {
                   return N;
             }
-
-            inline std::size_t size() const {
+            constexpr std::size_t size() const {
                   return this->size_;
             }
-            inline bool empty() const {
+            constexpr bool empty() const {
                   return !this->size();
             }
-            inline void push_back(const T &value) {
+            constexpr void push_back(const T &value) {
                   if (this->size_ >= N) {
                         throw std::out_of_range("Overflow");
                   }
                   this->data[this->size_++] = value;
                   return;
             }
-            inline void push_back(T &&value) {
+            constexpr void push_back(T &&value) {
                   if (this->size_ >= N) {
                         throw std::out_of_range("Overflow");
                   }
                   this->data[this->size_++] = std::move(value);
                   return;
             }
-            inline void pop_back() {
+            constexpr void pop_back() {
                   if (!this->size_) {
                         throw std::out_of_range("Underflow");
                   }
                   --this->size_;
                   return;
             }
-            inline T &at(const std::size_t idx) {
+            constexpr T &at(const std::size_t idx) {
                   if (idx >= this->size_) {
                         throw std::out_of_range("Index out of range");
                   }
                   return this->data[idx];
             }
-            inline const T &at(const std::size_t idx) const {
+            constexpr const T &at(const std::size_t idx) const {
                   if (idx >= size_) {
                         throw std::out_of_range("Index out of range");
                   }
                   return this->data[idx];
             }
-            inline void clear() {
+            constexpr void clear() {
                   this->size_ = 0u;
                   return;
             }
-            inline void erase(const T &data) {
+            constexpr void erase(const T &data) {
                   std::size_t result = 0u;
                   for (auto i = 0u; i < this->size_ - 1u; ++i) {
                         const auto &val = this->data[i];
@@ -71,22 +82,14 @@ namespace boost {
                   this->size_ = result;
                   return;
             }
-            inline std::size_t count(const T &data) const {
+            constexpr std::size_t count(const T &data) const {
                   std::size_t result = 0u;
                   for (auto i = 0u; i < this->size_; ++i) {
-                       result += this->data[i] == data;
+                        result += this->data[i] == data;
                   }
                   return result;
             }
-            inline auto find(const T &value) {
-                  for (auto i = 0u; i < this->size_; ++i) {
-                        if (this->data[i] == value) {
-                              return this->data.begin() + i;
-                        }
-                  }
-                  return this->data.begin() + this->size_; 
-            }
-            inline auto find(const T &value) const {
+            constexpr auto find(const T &value) {
                   for (auto i = 0u; i < this->size_; ++i) {
                         if (this->data[i] == value) {
                               return this->data.begin() + i;
@@ -94,38 +97,68 @@ namespace boost {
                   }
                   return this->data.begin() + this->size_;
             }
-            inline T &operator[](const std::size_t idx) {
+            constexpr auto find(const T &value) const {
+                  for (auto i = 0u; i < this->size_; ++i) {
+                        if (this->data[i] == value) {
+                              return this->data.begin() + i;
+                        }
+                  }
+                  return this->data.begin() + this->size_;
+            }
+            constexpr T &operator[](const std::size_t idx) {
                   return this->data[idx];
             }
-            inline const T &operator[](const std::size_t idx) const {
+            constexpr const T &operator[](const std::size_t idx) const {
+                  return this->data[idx];
+            }
+            constexpr auto front() {
+                  return this->data[0u];
+            }
+            constexpr auto back() {
+                  auto idx = this->size_;
+                  if (idx) {
+                        --idx;
+                  }
+                  return this->data[idx];
+            }
+            constexpr auto front() const {
+                  return this->data[0u];
+            }
+            constexpr auto back() const {
+                  auto idx = this->size_;
+                  if (idx) {
+                        --idx;
+                  }
                   return this->data[idx];
             }
 
-            inline auto begin() {
+            constexpr auto begin() {
                   return this->data.begin();
             }
-            inline auto end() {
+            constexpr auto end() {
                   return this->data.begin() + this->size_;
             }
-            inline auto rbegin() {
+            constexpr auto rbegin() {
                   return this->data.rbegin();
             }
-            inline auto rend() {
+            constexpr auto rend() {
                   return this->data.rend();
             }
-            inline auto begin() const {
+            constexpr auto begin() const {
                   return this->data.begin();
             }
-            inline auto end() const {
+            constexpr auto end() const {
                   return this->data.begin() + this->size_;
             }
-            inline auto rbegin() const {
+            constexpr auto rbegin() const {
                   return this->data.rbegin();
             }
-            inline auto rend() const {
+            constexpr auto rend() const {
                   return this->data.rend();
             }
-
+            constexpr auto contains_idx(const std::size_t idx) const {
+                  return idx < this->size_;
+            }
 
           private:
             std::array<T, N> data;
